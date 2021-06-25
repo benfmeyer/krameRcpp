@@ -18,7 +18,9 @@ NumericVector r_chilling_cpp(NumericVector temp, double tc_min = -19.61,
   int n = temp.size();
   NumericVector rc(n);
   for (int i = 0; i < n; i++) {
-    if (temp[i] < tc_min) {
+    if (NumericVector::is_na(temp[i])) {
+      rc[i] = NA_REAL;
+    } else if (temp[i] < tc_min) {
       rc[i] = 0;
     } else if (tc_min <= temp[i] && temp[i] <= tc_opt) {
       rc[i] = (temp[i] - tc_min) / (tc_opt - tc_min);
@@ -50,7 +52,9 @@ NumericVector r_forcing_cpp(NumericVector temp, NumericVector s_chill, float tf_
   int n = temp.size();
   NumericVector rf(n);
   for (int i = 0; i < n; i++) {
-    if (temp[i] <= tf_min) {
+    if (NumericVector::is_na(temp[i])) {
+      rf[i] = NA_REAL;
+    } else if (temp[i] <= tf_min) {
       rf[i] = 0;
     } else if (temp[i] > tf_min && s_chill[i] > 125.51) {
       rf[i] = 1 / (1 + exp(-0.1 * (temp[i] + (-32.58))));
@@ -66,7 +70,9 @@ NumericVector leaf_out_status_cpp(NumericVector s_force) {
   int n = s_force.size();
   NumericVector lo_stat(n);
   for (int i = 0; i < n; i++) {
-    if (s_force[i] > 3.15) {
+    if (NumericVector::is_na(s_force[i])) {
+      lo_stat[i] = NA_REAL;
+    } else if (s_force[i] > 3.15) {
       lo_stat[i] = 1;
     } else {
       lo_stat[i] = 0;
@@ -93,7 +99,9 @@ NumericVector late_frost_status_cpp(NumericVector accum_lo, NumericVector tmin, 
   int n = tmin.size();
   NumericVector lfs(n);
   for (int i = 0; i < n; i++) {
-    if (accum_lo[i] >= 1 && accum_lo[i] <= range) {
+    if (NumericVector::is_na(tmin[i])) {
+      lfs[i] = NA_REAL;
+    } else if (accum_lo[i] >= 1 && accum_lo[i] <= range) {
       if (tmin[i] < thresh) {
         lfs[i] = 1;
       } else {
